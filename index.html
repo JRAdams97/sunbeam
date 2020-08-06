@@ -1,10 +1,72 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Home</title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-  </body>
-</html>
+---
+layout: default
+title: Discography
+---
+
+<h1 class="display-4">Discographies</h1>
+<hr/>
+
+<p class="lead">A repository page that lists the current status of my music collection; by year. This collection will continue to grow as I add additional albums and calculate missing tracks. The CSV is not embedded into the associated Git repository to save space. The CSV will be stored locally in a backed-up environment.</p>
+
+<br/>
+
+<h2>1990</h2>
+<hr/>
+
+{% assign trackCount = 0 %}
+{% assign missingCount = 0 %}
+
+<table class="table table-sm table-striped">
+  {% for albums in site.data.albums_1990 %}
+    {% assign albumIndex = forloop.index %}
+
+    {% if forloop.first %}
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">#</th>
+
+          {% for key in albums %}
+            <th scope="col">{{ key[0] }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+    {% elsif forloop.last %}
+      
+    {% endif %}
+
+    {% for value in albums %}
+      {% if forloop.first %}
+        <tr>
+          <th scope="row">{{ albumIndex }}</th>
+          <td>{{ value[1] }}</td>
+      {% elsif forloop.index == 2 %}
+          <td class="font-weight-bold">{{ value[1] }}</td>
+      {% elsif forloop.index == 3 %}
+        <td class="font-weight-bold font-italic">{{ value[1] }}</td>
+      {% elsif forloop.index == 6 %}
+        <td class="font-italic">{{ value[1] }}</td>
+      {% elsif forloop.index == 12 %}
+        {% assign trackCount = trackCount | plus:value[1] %}
+        <td>{{ value[1] }}</td>
+      {% elsif forloop.index == 14 %}
+        {% assign missingCount = missingCount | plus:value[1] %}
+        <td>{{ value[1] }}</td>
+      {% elsif forloop.last %}
+        {% assign rowLength = forloop.length %}
+        <td><code>{{ value[1] }}</code></td>
+        </tr>
+      {% else %}
+        <td>{{ value[1] }}</td>
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr class="table-dark">
+      <td colspan="{{ rowLength | minus:1 }}"></td>
+      <td class="font-weight-bold bg-success">Total: {{ trackCount }}</td>
+      <td class="font-weight-bold bg-danger">Missing: {{ missingCount }}</td>
+    </tr>
+  </tfoot>
+</table>
